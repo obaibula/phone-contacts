@@ -1,6 +1,7 @@
 package com.example.phonecontacts.auth;
 
 import com.example.phonecontacts.config.JwtService;
+import com.example.phonecontacts.exception.UserNotFoundException;
 import com.example.phonecontacts.user.Role;
 import com.example.phonecontacts.user.User;
 import com.example.phonecontacts.user.UserRepository;
@@ -40,7 +41,7 @@ public class AuthenticationService {
                 )
         );
         var user = userRepository.findByUsername(request.username())
-                .orElseThrow(); // todo: throw appropriate exc
+                .orElseThrow(() -> new UserNotFoundException("User not found with username - " + request.username()));
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

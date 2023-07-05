@@ -20,4 +20,6 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     void deleteInBulkByName(String name);
 
     Optional<Contact> findByName(String name);
+
+    boolean existsByName(String name);
 }

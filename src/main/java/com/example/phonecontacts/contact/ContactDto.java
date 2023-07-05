@@ -2,6 +2,7 @@ package com.example.phonecontacts.contact;
 
 import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.phonenumber.PhoneNumber;
+import com.example.phonecontacts.validation.UniqueName;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.UniqueElements;
@@ -12,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record ContactDto(
+        @UniqueName
         @NotNull(message = "Invalid name : name must not be null")
         String name,
         @UniqueElements(message = "Duplicate emails found")

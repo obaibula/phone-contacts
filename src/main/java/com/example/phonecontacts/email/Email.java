@@ -22,7 +22,4 @@ public class Email {
     @JoinColumn(name = "contact_id")
     private Contact contact;
 
-    /*public Email (String email){
-        this.email = email;
-    }*/
 }

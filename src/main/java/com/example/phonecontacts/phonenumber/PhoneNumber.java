@@ -8,7 +8,8 @@ import lombok.*;
 @Table(name = "phone_numbers")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @EqualsAndHashCode(of = {"id", "phoneNumber"})
 @ToString(of = "phoneNumber")
 public class PhoneNumber {
@@ -23,7 +24,4 @@ public class PhoneNumber {
     @JoinColumn(name = "contact_id")
     private Contact contact;
 
-    /*public PhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }*/
 }

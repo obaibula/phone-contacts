@@ -1,5 +1,6 @@
 package com.example.phonecontacts.contact;
 
+import com.example.phonecontacts.exception.ContactNotFoundException;
 import com.example.phonecontacts.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,6 +46,8 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional
     public void deleteByName(String name) {
+        contactRepository.findByName(name)
+                .orElseThrow(() -> new ContactNotFoundException("Contact not found with name - " + name));
         contactRepository.deleteInBulkByName(name);
     }
 
