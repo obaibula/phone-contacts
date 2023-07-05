@@ -4,19 +4,23 @@ import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.phonenumber.PhoneNumber;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record ContactDto(
         @NotNull(message = "Invalid name : name must not be null")
         String name,
+        @UniqueElements(message = "Duplicate emails found")
         List<
                 @jakarta.validation.constraints.Email(message = "Invalid email: must be example@mail.com")
                 @NotNull(message = "Invalid email: Email must not be null")
                         String
                 > emails,
+        @UniqueElements(message = "Duplicate phoneNumbers found")
         List<
                 @NotNull(message = "Invalid phoneNumber: phoneNumber must not be null")
                 @Pattern(regexp = "^\\+38 \\d{3} \\d{3}-\\d{2}-\\d{2}$",
@@ -38,11 +42,11 @@ public record ContactDto(
         return contact;
     }
 
-    private static List<PhoneNumber> getPhoneNumbers(ContactDto contactDto) {
+    private static Set<PhoneNumber> getPhoneNumbers(ContactDto contactDto) {
         return contactDto.phoneNumbers
                 .stream()
                 .map(getPhoneNumberFunction())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private static Function<String, PhoneNumber> getPhoneNumberFunction() {
@@ -53,11 +57,11 @@ public record ContactDto(
         };
     }
 
-    private static List<Email> getEmails(ContactDto contactDto) {
+    private static Set<Email> getEmails(ContactDto contactDto) {
         return contactDto.emails
                 .stream()
                 .map(getEmailFunction())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private static Function<String, Email> getEmailFunction() {

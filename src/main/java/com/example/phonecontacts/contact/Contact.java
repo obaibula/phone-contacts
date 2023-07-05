@@ -10,7 +10,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "contacts")
@@ -34,12 +36,12 @@ public class Contact {
     @OneToMany(mappedBy = "contact",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<Email> emails = new ArrayList<>();
+    private Set<Email> emails = new HashSet<>();
 
     @OneToMany(mappedBy = "contact",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<PhoneNumber> phoneNumbers = new ArrayList<>();
+    private Set<PhoneNumber> phoneNumbers = new HashSet<>();
 
     public void addEmail(Email email) {
         emails.add(email);

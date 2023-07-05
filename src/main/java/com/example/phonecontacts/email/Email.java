@@ -3,9 +3,6 @@ package com.example.phonecontacts.email;
 import com.example.phonecontacts.contact.Contact;
 import jakarta.persistence.*;
 import lombok.*;
-// todo: Also every phone number and email should be unique per contact.
-//  So it should not be possible to add already existing email,
-//  the same for phone numbers
 @Entity
 @Table(name = "emails")
 @NoArgsConstructor
