@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Setter
 // because name is unique
 @EqualsAndHashCode(of = "name")
+@ToString(exclude = "user")
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +58,6 @@ public class Contact {
 
     public void removePhoneNumber(PhoneNumber phoneNumber){
         phoneNumbers.remove(phoneNumber);
-        phoneNumber.setPhoneNumber(null);
+        phoneNumber.setContact(null);
     }
 }
