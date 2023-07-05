@@ -4,6 +4,7 @@ import com.example.phonecontacts.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.List;
 public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
     private final UserDetailsService userDetailsService;
+
     @Override
+    @Transactional
     public Contact save(Contact contact, Principal principal) {
         var username = principal.getName();
         var user = (User) userDetailsService.loadUserByUsername(username);
@@ -28,13 +31,21 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ContactDto> findAll(Principal principal) {
         var username = principal.getName();
-        var user = (User)userDetailsService.loadUserByUsername(username);
+        var user = (User) userDetailsService.loadUserByUsername(username);
 
         return contactRepository.findAllByUserId(user.getId())
                 .stream()
                 .map(ContactDto::contactToDto)
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void deleteByName(String name) {
+        contactRepository.deleteInBulkByName(name);
+    }
+
 }

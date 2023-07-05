@@ -5,5 +5,8 @@ import java.util.List;
 
 public interface ContactService {
     Contact save(Contact contact, Principal principal);
+
     List<ContactDto> findAll(Principal principal);
+
+    void deleteByName(String name);
 }

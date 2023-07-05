@@ -2,13 +2,27 @@ package com.example.phonecontacts.contact;
 
 import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.phonenumber.PhoneNumber;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public record ContactDto(String name,
-                         List<String> emails,
-                         List<String> phoneNumbers) {
+public record ContactDto(
+        @NotNull(message = "Invalid name : name must not be null")
+        String name,
+        List<
+                @jakarta.validation.constraints.Email(message = "Invalid email: must be example@mail.com")
+                @NotNull(message = "Invalid email: Email must not be null")
+                        String
+                > emails,
+        List<
+                @NotNull(message = "Invalid phoneNumber: phoneNumber must not be null")
+                @Pattern(regexp = "^\\+38 \\d{3} \\d{3}-\\d{2}-\\d{2}$",
+                        message = "Invalid phoneNumber: The phone number should be in the next format: +38 050 123-45-67")
+                        String
+                > phoneNumbers) {
     public static ContactDto contactToDto(Contact contact) {
         return new ContactDto(
                 contact.getName(),
@@ -27,22 +41,31 @@ public record ContactDto(String name,
     private static List<PhoneNumber> getPhoneNumbers(ContactDto contactDto) {
         return contactDto.phoneNumbers
                 .stream()
-                .map(stringPhone -> {
-                    var phone = new PhoneNumber();
-                    phone.setPhoneNumber(stringPhone);
-                    return phone;
-                }).collect(Collectors.toList());
+                .map(getPhoneNumberFunction())
+                .collect(Collectors.toList());
+    }
+
+    private static Function<String, PhoneNumber> getPhoneNumberFunction() {
+        return stringPhone -> {
+            var phone = new PhoneNumber();
+            phone.setPhoneNumber(stringPhone);
+            return phone;
+        };
     }
 
     private static List<Email> getEmails(ContactDto contactDto) {
         return contactDto.emails
                 .stream()
-                .map(stringEmail -> {
-                    var email = new Email();
-                    email.setEmail(stringEmail);
-                    return email;
-                })
+                .map(getEmailFunction())
                 .collect(Collectors.toList());
+    }
+
+    private static Function<String, Email> getEmailFunction() {
+        return stringEmail -> {
+            var email = new Email();
+            email.setEmail(stringEmail);
+            return email;
+        };
     }
 
     private static List<String> getPhoneNumbers(Contact contact) {
