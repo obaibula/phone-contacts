@@ -9,4 +9,6 @@ public interface ContactService {
     List<ContactDto> findAll(Principal principal);
 
     void deleteByName(String name);
+
+    Contact update(Long contactId, Contact contact, Principal principal);
 }

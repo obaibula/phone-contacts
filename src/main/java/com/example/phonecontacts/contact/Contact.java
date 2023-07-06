@@ -5,6 +5,7 @@ import com.example.phonecontacts.phonenumber.PhoneNumber;
 import com.example.phonecontacts.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,6 +52,10 @@ public class Contact {
         email.setContact(null);
     }
 
+    public void removeAllEmails() {
+        emails.clear();
+    }
+
     public void addPhoneNumber(PhoneNumber phoneNumber){
         phoneNumbers.add(phoneNumber);
         phoneNumber.setContact(this);
@@ -59,5 +64,9 @@ public class Contact {
     public void removePhoneNumber(PhoneNumber phoneNumber){
         phoneNumbers.remove(phoneNumber);
         phoneNumber.setContact(null);
+    }
+
+    public void removeAllPhoneNumbers() {
+        phoneNumbers.clear();
     }
 }

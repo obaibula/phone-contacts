@@ -2,6 +2,8 @@ package com.example.phonecontacts.contact;
 
 import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.phonenumber.PhoneNumber;
+import com.example.phonecontacts.validation.PostInfo;
+import com.example.phonecontacts.validation.PutInfo;
 import com.example.phonecontacts.validation.UniqueName;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,22 +15,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record ContactDto(
-        @UniqueName
-        @NotNull(message = "Invalid name : name must not be null")
+        @UniqueName(groups = PostInfo.class)
+        @NotNull(message = "Invalid name : name must not be null", groups = {PostInfo.class, PutInfo.class})
         String name,
-        @UniqueElements(message = "Duplicate emails found")
-        List<
-                @jakarta.validation.constraints.Email(message = "Invalid email: must be example@mail.com")
-                @NotNull(message = "Invalid email: Email must not be null")
-                        String
-                > emails,
-        @UniqueElements(message = "Duplicate phoneNumbers found")
-        List<
-                @NotNull(message = "Invalid phoneNumber: phoneNumber must not be null")
-                @Pattern(regexp = "^\\+38 \\d{3} \\d{3}-\\d{2}-\\d{2}$",
-                        message = "Invalid phoneNumber: The phone number should be in the next format: +38 050 123-45-67")
-                        String
-                > phoneNumbers) {
+        @UniqueElements(message = "Duplicate emails found", groups = {PostInfo.class, PutInfo.class})
+        List<@jakarta.validation.constraints.Email(message = "Invalid email: must be example@mail.com", groups = {PostInfo.class, PutInfo.class})
+        @NotNull(message = "Invalid email: Email must not be null", groups = {PostInfo.class, PutInfo.class})
+                String> emails,
+        @UniqueElements(message = "Duplicate phoneNumbers found", groups = {PostInfo.class, PutInfo.class})
+        List<@NotNull(message = "Invalid phoneNumber: phoneNumber must not be null", groups = {PostInfo.class, PutInfo.class})
+        @Pattern(regexp = "^\\+38 \\d{3} \\d{3}-\\d{2}-\\d{2}$",
+                message = "Invalid phoneNumber: The phone number should be in the next format: +38 050 123-45-67",
+                groups = {PostInfo.class, PutInfo.class})
+                String> phoneNumbers) {
+
     public static ContactDto contactToDto(Contact contact) {
         return new ContactDto(
                 contact.getName(),

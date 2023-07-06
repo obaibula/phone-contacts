@@ -1,9 +1,12 @@
 package com.example.phonecontacts.contact;
 
+import com.example.phonecontacts.validation.PostInfo;
+import com.example.phonecontacts.validation.PutInfo;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,7 +24,7 @@ public class ContactController {
     private final UserDetailsService userDetailsService;
 
     @PostMapping
-    public ResponseEntity<ContactDto> createContact(@RequestBody @Valid ContactDto contactDto, Principal principal) {
+    public ResponseEntity<ContactDto> createContact(@RequestBody @Validated(PostInfo.class) ContactDto contactDto, Principal principal) {
 
         var savedContact = contactService.save(ContactDto.DtoToContact(contactDto), principal);
 
@@ -44,15 +47,22 @@ public class ContactController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteContact(@RequestBody Contact contact){
+    public ResponseEntity<Void> deleteContact(@RequestBody Contact contact) {
         contactService.deleteByName(contact.getName());
         return ResponseEntity.noContent().build();
     }
 
     // todo
-    @PutMapping
-    public ResponseEntity<ContactDto> updateContact(@RequestBody @Valid ContactDto contactDto, Principal principal){
-        var savedContact = contactService.save(ContactDto.DtoToContact(contactDto), principal);
+    @PutMapping("/{contactId}")
+    public ResponseEntity<ContactDto> updateContact(@PathVariable Long contactId,
+                                                    @RequestBody @Validated(PutInfo.class) ContactDto contactUpdate,
+                                                    Principal principal) {
+
+        var savedContact = contactService.update(
+                contactId,
+                ContactDto.DtoToContact(contactUpdate),
+                principal);
+
         return created(getLocation(savedContact))
                 .body(ContactDto.contactToDto(savedContact));
     }
