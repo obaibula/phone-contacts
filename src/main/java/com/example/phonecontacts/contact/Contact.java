@@ -4,10 +4,7 @@ import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.phonenumber.PhoneNumber;
 import com.example.phonecontacts.user.User;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,6 +15,7 @@ import java.util.Set;
 @Table(name = "contacts")
 @Getter
 @Setter
+@NoArgsConstructor
 // because name is unique
 @EqualsAndHashCode(of = "name")
 @ToString(exclude = "user")
