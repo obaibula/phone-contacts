@@ -19,6 +19,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
             """)
     List<Contact> findAllByUserId(Long userId);
 
+    // custom query for deleting an entity and its associated orphans in a single SQL operation
     @Modifying
     @Query(value = """
             DELETE
