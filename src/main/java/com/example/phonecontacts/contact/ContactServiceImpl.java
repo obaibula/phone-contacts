@@ -1,6 +1,8 @@
 package com.example.phonecontacts.contact;
 
+import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.exception.ContactNotFoundException;
+import com.example.phonecontacts.phonenumber.PhoneNumber;
 import com.example.phonecontacts.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +27,14 @@ public class ContactServiceImpl implements ContactService {
         var user = (User) userDetailsService.loadUserByUsername(username);
 
         // Set the contact for all emails and phone numbers, as we are passing a list of strings.
-        contact.getEmails().forEach(email -> email.setContact(contact));
-        contact.getPhoneNumbers().forEach(phoneNumber -> phoneNumber.setContact(contact));
+        Set<Email> emails = contact.getEmails();
+        if (emails != null) {
+            emails.forEach(email -> email.setContact(contact));
+        }
+        Set<PhoneNumber> phoneNumbers = contact.getPhoneNumbers();
+        if (phoneNumbers != null) {
+            phoneNumbers.forEach(phoneNumber -> phoneNumber.setContact(contact));
+        }
 
         // Set USER
         contact.setUser(user);
@@ -76,21 +85,17 @@ public class ContactServiceImpl implements ContactService {
         existingContact.removeAllPhoneNumbers();
 
         // Update emails
-        updateEmails(contact, existingContact);
+        if (contact.getEmails() != null) {
+            updateEmails(contact, existingContact);
+        }
 
         // Update phoneNumbers
-        updatePhoneNumbers(contact, existingContact);
+        if (contact.getPhoneNumbers() != null) {
+            updatePhoneNumbers(contact, existingContact);
+        }
 
         return contactRepository.save(existingContact);
 
-    }
-
-    private void updatePhoneNumbers(Contact contact, Contact existingContact) {
-        contact.getPhoneNumbers()
-                .forEach(phoneNumber -> {
-                    phoneNumber.setContact(existingContact);
-                    existingContact.addPhoneNumber(phoneNumber);
-                });
     }
 
     private void updateEmails(Contact contact, Contact existingContact) {
@@ -98,6 +103,14 @@ public class ContactServiceImpl implements ContactService {
                 .forEach(email -> {
                     email.setContact(existingContact);
                     existingContact.addEmail(email);
+                });
+    }
+
+    private void updatePhoneNumbers(Contact contact, Contact existingContact) {
+        contact.getPhoneNumbers()
+                .forEach(phoneNumber -> {
+                    phoneNumber.setContact(existingContact);
+                    existingContact.addPhoneNumber(phoneNumber);
                 });
     }
 

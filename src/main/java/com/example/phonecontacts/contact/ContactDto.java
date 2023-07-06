@@ -45,6 +45,9 @@ public record ContactDto(
     }
 
     private static Set<PhoneNumber> getPhoneNumbers(ContactDto contactDto) {
+        if(contactDto.phoneNumbers == null)
+            return null;
+
         return contactDto.phoneNumbers
                 .stream()
                 .map(getPhoneNumberFunction())
@@ -60,6 +63,9 @@ public record ContactDto(
     }
 
     private static Set<Email> getEmails(ContactDto contactDto) {
+        if(contactDto.emails == null)
+            return null;
+
         return contactDto.emails
                 .stream()
                 .map(getEmailFunction())
@@ -75,6 +81,9 @@ public record ContactDto(
     }
 
     private static List<String> getPhoneNumbers(Contact contact) {
+        if(contact.getPhoneNumbers() == null)
+            return null;
+
         return contact.getPhoneNumbers()
                 .stream()
                 .map(PhoneNumber::getPhoneNumber)
@@ -82,6 +91,9 @@ public record ContactDto(
     }
 
     private static List<String> getEmails(Contact contact) {
+        if(contact.getEmails() == null)
+            return null;
+
         return contact.getEmails()
                 .stream()
                 .map(Email::getEmail)
