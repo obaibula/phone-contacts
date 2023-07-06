@@ -9,6 +9,14 @@ import java.util.Optional;
 
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 
+    // Custom query is used to resolve the N+1 problem.
+    @Query("""
+            FROM Contact c
+            LEFT JOIN FETCH c.emails
+            LEFT JOIN FETCH c.phoneNumbers
+            JOIN c.user u
+            WHERE u.id = ?1
+            """)
     List<Contact> findAllByUserId(Long userId);
 
     @Modifying

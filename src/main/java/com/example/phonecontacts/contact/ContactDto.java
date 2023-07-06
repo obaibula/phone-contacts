@@ -16,14 +16,20 @@ import java.util.stream.Collectors;
 
 public record ContactDto(
         @UniqueName(groups = PostInfo.class)
-        @NotNull(message = "Invalid name : name must not be null", groups = {PostInfo.class, PutInfo.class})
+        @NotNull(message = "Invalid name : name must not be null",
+                groups = {PostInfo.class, PutInfo.class})
         String name,
-        @UniqueElements(message = "Duplicate emails found", groups = {PostInfo.class, PutInfo.class})
-        List<@jakarta.validation.constraints.Email(message = "Invalid email: must be example@mail.com", groups = {PostInfo.class, PutInfo.class})
-        @NotNull(message = "Invalid email: Email must not be null", groups = {PostInfo.class, PutInfo.class})
+        @UniqueElements(message = "Duplicate emails found",
+                groups = {PostInfo.class, PutInfo.class})
+        List<@jakarta.validation.constraints.Email(message = "Invalid email: must be example@mail.com",
+                groups = {PostInfo.class, PutInfo.class})
+        @NotNull(message = "Invalid email: Email must not be null",
+                groups = {PostInfo.class, PutInfo.class})
                 String> emails,
-        @UniqueElements(message = "Duplicate phoneNumbers found", groups = {PostInfo.class, PutInfo.class})
-        List<@NotNull(message = "Invalid phoneNumber: phoneNumber must not be null", groups = {PostInfo.class, PutInfo.class})
+        @UniqueElements(message = "Duplicate phoneNumbers found",
+                groups = {PostInfo.class, PutInfo.class})
+        List<@NotNull(message = "Invalid phoneNumber: phoneNumber must not be null",
+                groups = {PostInfo.class, PutInfo.class})
         @Pattern(regexp = "^\\+38 \\d{3} \\d{3}-\\d{2}-\\d{2}$",
                 message = "Invalid phoneNumber: The phone number should be in the next format: +38 050 123-45-67",
                 groups = {PostInfo.class, PutInfo.class})
@@ -45,7 +51,7 @@ public record ContactDto(
     }
 
     private static Set<PhoneNumber> getPhoneNumbers(ContactDto contactDto) {
-        if(contactDto.phoneNumbers == null)
+        if (contactDto.phoneNumbers == null)
             return null;
 
         return contactDto.phoneNumbers
@@ -63,7 +69,7 @@ public record ContactDto(
     }
 
     private static Set<Email> getEmails(ContactDto contactDto) {
-        if(contactDto.emails == null)
+        if (contactDto.emails == null)
             return null;
 
         return contactDto.emails
@@ -81,7 +87,7 @@ public record ContactDto(
     }
 
     private static List<String> getPhoneNumbers(Contact contact) {
-        if(contact.getPhoneNumbers() == null)
+        if (contact.getPhoneNumbers() == null)
             return null;
 
         return contact.getPhoneNumbers()
@@ -91,7 +97,7 @@ public record ContactDto(
     }
 
     private static List<String> getEmails(Contact contact) {
-        if(contact.getEmails() == null)
+        if (contact.getEmails() == null)
             return null;
 
         return contact.getEmails()

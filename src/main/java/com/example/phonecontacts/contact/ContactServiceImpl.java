@@ -27,6 +27,12 @@ public class ContactServiceImpl implements ContactService {
         var user = (User) userDetailsService.loadUserByUsername(username);
 
         // Set the contact for all emails and phone numbers, as we are passing a list of strings.
+        // During the creation of a Contact in the database,
+        // there will be multiple INSERT statements executed.
+        // This should not impact the performance in our case
+        // since people typically have only 1-2 phone numbers and emails.
+        // Considering the time constraints and
+        // for maximum simplicity, I have come up with this solution.
         Set<Email> emails = contact.getEmails();
         if (emails != null) {
             emails.forEach(email -> email.setContact(contact));
