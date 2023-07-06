@@ -2,7 +2,6 @@ package com.example.phonecontacts.contact;
 
 import com.example.phonecontacts.validation.PostInfo;
 import com.example.phonecontacts.validation.PutInfo;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
