@@ -7,16 +7,20 @@ import com.example.phonecontacts.validation.PutInfo;
 import com.example.phonecontacts.validation.UniqueName;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-// todo: add size constraints
+
 public record ContactDto(
         @UniqueName(groups = PostInfo.class)
         @NotNull(message = "Invalid name : name must not be null",
+                groups = {PostInfo.class, PutInfo.class})
+        @Size(min = 1, max = 255,
+                message = "Invalid name: Must be of 1 - 255 characters",
                 groups = {PostInfo.class, PutInfo.class})
         String name,
         @UniqueElements(message = "Duplicate emails found",

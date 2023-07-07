@@ -4,6 +4,8 @@ import com.example.phonecontacts.validation.PostInfo;
 import com.example.phonecontacts.validation.PutInfo;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -155,6 +157,24 @@ class ContactDtoTest {
         assertThat(violations.size()).isEqualTo(1);
         String errorMessage = violations.iterator().next().getMessage();
         assertThat(errorMessage).isEqualTo("Invalid phoneNumber: The phone number should be in the next format: +38 050 123-45-67");
+    }
+
+    @Test
+    public void nameShouldBeOf1Or255Characters(){
+        // given
+        var dto = new ContactDto(
+                "x".repeat(256),
+                null,
+                null
+        );
+
+        // when
+        var violations = validator.validate(dto, PutInfo.class);
+
+        // then
+        assertThat(violations.size()).isEqualTo(1);
+        String errorMessage = violations.iterator().next().getMessage();
+        assertThat(errorMessage).isEqualTo("Invalid name: Must be of 1 - 255 characters");
     }
 
 }
