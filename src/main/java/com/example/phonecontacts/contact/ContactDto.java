@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
+// todo: add size constraints
 public record ContactDto(
         @UniqueName(groups = PostInfo.class)
         @NotNull(message = "Invalid name : name must not be null",

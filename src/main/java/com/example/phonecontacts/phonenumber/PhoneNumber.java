@@ -24,4 +24,7 @@ public class PhoneNumber {
     @JoinColumn(name = "contact_id")
     private Contact contact;
 
+    public PhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

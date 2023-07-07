@@ -51,7 +51,7 @@ public class ContactController {
         return ResponseEntity.noContent().build();
     }
 
-    // todo
+
     @PutMapping("/{contactId}")
     public ResponseEntity<ContactDto> updateContact(@PathVariable Long contactId,
                                                     @RequestBody @Validated(PutInfo.class) ContactDto contactUpdate,
