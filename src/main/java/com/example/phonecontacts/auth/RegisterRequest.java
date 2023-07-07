@@ -1,11 +1,13 @@
 package com.example.phonecontacts.auth;
 
 
+import com.example.phonecontacts.validation.UniqueLogin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
+        @UniqueLogin
         @NotNull(message = "Username must not be null")
         @Pattern(regexp = "^[A-Za-z0-9]+$",
         message = "Invalid username: Must contain only latin characters and numbers")
