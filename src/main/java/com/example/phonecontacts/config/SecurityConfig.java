@@ -17,6 +17,9 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
+
+    // Please note that due to the limited timeframe of 3 days for completing the test task,
+    // I implemented this bean in a functional but suboptimal manner..
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf()

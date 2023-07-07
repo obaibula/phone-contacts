@@ -22,6 +22,9 @@ public class ContactController {
     private final ContactService contactService;
     private final UserDetailsService userDetailsService;
 
+    // Please note that due to the limited timeframe of 3 days for completing the test task,
+    // I implemented the DTO mapping in a functional but suboptimal manner.
+    // Also, it should be in the service class.
     @PostMapping
     public ResponseEntity<ContactDto> createContact(@RequestBody @Validated(PostInfo.class) ContactDto contactDto, Principal principal) {
 
@@ -46,8 +49,8 @@ public class ContactController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteContact(@RequestBody Contact contact) {
-        contactService.deleteByName(contact.getName());
+    public ResponseEntity<Void> deleteContact(@RequestBody Contact contact, Principal principal) {
+        contactService.deleteByName(contact.getName(), principal);
         return ResponseEntity.noContent().build();
     }
 

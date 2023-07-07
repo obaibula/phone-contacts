@@ -75,9 +75,10 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     @Transactional
-    public void deleteByName(String name) {
-        contactRepository.findByName(name)
+    public void deleteByName(String name, Principal principal) {
+        var existingContact = contactRepository.findByName(name)
                 .orElseThrow(() -> new ContactNotFoundException("Contact not found with name - " + name));
+        validateOwnership(principal, existingContact);
         contactRepository.deleteInBulkByName(name);
     }
 
@@ -89,11 +90,12 @@ public class ContactServiceImpl implements ContactService {
         var existingContact = contactRepository.findById(contactId)
                 .orElseThrow(() -> new ContactNotFoundException("Not found contact with name - " + name));
 
+
+        validateOwnership(principal, existingContact);
         // Please note that due to the limited timeframe of 3 days for completing the test task,
         // I implemented the validation in a functional but suboptimal manner..
         checkIfContactIsPresent(contactId, name);
 
-        validateOwnership(principal, existingContact);
 
         updateAppropriateFields(contact, name, existingContact);
 
