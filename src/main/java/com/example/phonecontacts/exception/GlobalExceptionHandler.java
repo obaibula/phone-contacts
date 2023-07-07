@@ -34,6 +34,19 @@ public class GlobalExceptionHandler {
         List<String> errors = Collections.singletonList(e.getMessage());
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(UserNotAuthorizedException.class)
+    public ResponseEntity<Map<String, List<String>>>
+    handleUserNotAuthorizedException(UserNotAuthorizedException e){
+        List<String> errors = Collections.singletonList(e.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UniqueContactException.class)
+    public ResponseEntity<Map<String, List<String>>>
+    handleUniqueContactException(UniqueContactException e){
+        List<String> errors = Collections.singletonList(e.getMessage());
+        return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Map<String, List<String>>>

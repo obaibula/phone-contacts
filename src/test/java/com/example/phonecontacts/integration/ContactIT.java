@@ -5,6 +5,7 @@ import com.example.phonecontacts.config.TestDatabaseContainerConfig;
 import com.example.phonecontacts.contact.Contact;
 import com.example.phonecontacts.contact.ContactRepository;
 import com.example.phonecontacts.exception.ContactNotFoundException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import org.flywaydb.core.Flyway;
@@ -20,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
 
@@ -33,21 +33,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource("classpath:application-test.properties")
 @AutoConfigureMockMvc
 public class ContactIT {
+    private final Faker faker = new Faker();
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private ContactRepository contactRepository;
-
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private UserDetailsService userDetailsService;
-
-    private final Faker faker = new Faker();
-
 
     @BeforeEach
     void setUp(@Autowired Flyway flyway) {
@@ -157,7 +153,7 @@ public class ContactIT {
 
         // then
 
-        resultActions.andExpect(status().isCreated());
+        resultActions.andExpect(status().isNoContent());
         var existsByOldName = contactRepository.existsByName(oldName);
         assertThat(existsByOldName).isFalse();
         var existsByNewName = contactRepository.existsByName(newName);

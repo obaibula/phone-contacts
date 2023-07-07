@@ -2,6 +2,8 @@ package com.example.phonecontacts.contact;
 
 import com.example.phonecontacts.email.Email;
 import com.example.phonecontacts.exception.ContactNotFoundException;
+import com.example.phonecontacts.exception.UniqueContactException;
+import com.example.phonecontacts.exception.UserNotAuthorizedException;
 import com.example.phonecontacts.phonenumber.PhoneNumber;
 import com.example.phonecontacts.user.User;
 import lombok.RequiredArgsConstructor;
@@ -32,21 +34,30 @@ public class ContactServiceImpl implements ContactService {
         // This should not impact the performance in our case
         // since people typically have only 1-2 phone numbers and emails.
         // Considering the time constraints and
-        // for maximum simplicity, I have come up with this solution. (The same is for update method)
-        Set<Email> emails = contact.getEmails();
-        if (emails != null) {
-            emails.forEach(email -> email.setContact(contact));
-        }
-        Set<PhoneNumber> phoneNumbers = contact.getPhoneNumbers();
-        if (phoneNumbers != null) {
-            phoneNumbers.forEach(phoneNumber -> phoneNumber.setContact(contact));
-        }
+        // for the sake of core functionality, I have come up with this solution.
+        // (The same applies to the update method)
+        setContactToAllEmails(contact);
+        setContactToAllPhoneNumbers(contact);
 
         // Set USER
         contact.setUser(user);
         user.addContact(contact);
 
         return contactRepository.save(contact);
+    }
+
+    private void setContactToAllPhoneNumbers(Contact contact) {
+        Set<PhoneNumber> phoneNumbers = contact.getPhoneNumbers();
+        if (phoneNumbers != null) {
+            phoneNumbers.forEach(phoneNumber -> phoneNumber.setContact(contact));
+        }
+    }
+
+    private void setContactToAllEmails(Contact contact) {
+        Set<Email> emails = contact.getEmails();
+        if (emails != null) {
+            emails.forEach(email -> email.setContact(contact));
+        }
     }
 
     @Override
@@ -78,11 +89,36 @@ public class ContactServiceImpl implements ContactService {
         var existingContact = contactRepository.findById(contactId)
                 .orElseThrow(() -> new ContactNotFoundException("Not found contact with name - " + name));
 
-        // Validate ownership of the contact before updating
-        if (!existingContact.getUser().getUsername().equals(principal.getName())) {
-            throw new RuntimeException("Unauthorized"); // todo
-        }
+        // Please note that due to the limited timeframe of 3 days for completing the test task,
+        // I implemented the validation in a functional but suboptimal manner..
+        checkIfContactIsPresent(contactId, name);
 
+        validateOwnership(principal, existingContact);
+
+        updateAppropriateFields(contact, name, existingContact);
+
+        return contactRepository.save(existingContact);
+
+    }
+
+    private void checkIfContactIsPresent(Long contactId, String name) {
+        var contactIsPresentExcludingCurrentId = contactRepository.findByName(name)
+                .stream()
+                .filter(c -> !c.getId().equals(contactId))
+                .anyMatch(c -> c.getName().equals(name));
+
+        if(contactIsPresentExcludingCurrentId){
+            throw new UniqueContactException("The contact is already present");
+        }
+    }
+
+    private void validateOwnership(Principal principal, Contact existingContact) {
+        if (!existingContact.getUser().getUsername().equals(principal.getName())) {
+            throw new UserNotAuthorizedException("Access denied"); // todo
+        }
+    }
+
+    private void updateAppropriateFields(Contact contact, String name, Contact existingContact) {
         // Update appropriate fields
         existingContact.setName(name);
 
@@ -99,9 +135,6 @@ public class ContactServiceImpl implements ContactService {
         if (contact.getPhoneNumbers() != null) {
             updatePhoneNumbers(contact, existingContact);
         }
-
-        return contactRepository.save(existingContact);
-
     }
 
     private void updateEmails(Contact contact, Contact existingContact) {

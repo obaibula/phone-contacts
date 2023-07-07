@@ -53,17 +53,16 @@ public class ContactController {
 
 
     @PutMapping("/{contactId}")
-    public ResponseEntity<ContactDto> updateContact(@PathVariable Long contactId,
-                                                    @RequestBody @Validated(PutInfo.class) ContactDto contactUpdate,
-                                                    Principal principal) {
+    public ResponseEntity<Void> updateContact(@PathVariable Long contactId,
+                                              @RequestBody @Validated(PutInfo.class) ContactDto contactUpdate,
+                                              Principal principal) {
 
-        var savedContact = contactService.update(
+        contactService.update(
                 contactId,
                 ContactDto.DtoToContact(contactUpdate),
                 principal);
 
-        return created(getLocation(savedContact))
-                .body(ContactDto.contactToDto(savedContact));
+        return ResponseEntity.noContent().build();
     }
 
 }

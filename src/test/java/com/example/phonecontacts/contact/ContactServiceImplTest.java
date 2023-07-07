@@ -1,6 +1,7 @@
 package com.example.phonecontacts.contact;
 
 import com.example.phonecontacts.exception.ContactNotFoundException;
+import com.example.phonecontacts.exception.UserNotAuthorizedException;
 import com.example.phonecontacts.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -162,6 +163,8 @@ class ContactServiceImplTest {
                 .willReturn(Optional.of(existingContact));
         given(contactRepository.save(existingContact))
                 .willReturn(existingContact);
+        given(contactRepository.findByName(name))
+                .willReturn(Optional.empty());
 
         // when
         var contactAfterUpdate = underTest.update(contactId, updatedContact, principal);
@@ -207,8 +210,8 @@ class ContactServiceImplTest {
                 .willReturn(Optional.of(existingContact));
 
         assertThatThrownBy(() -> underTest.update(1L, existingContact, principal))
-                .isInstanceOf(RuntimeException.class) //todo: create appropriate exc
-                .hasMessage("Unauthorized");
+                .isInstanceOf(UserNotAuthorizedException.class)
+                .hasMessage("Access denied");
 
 
     }
