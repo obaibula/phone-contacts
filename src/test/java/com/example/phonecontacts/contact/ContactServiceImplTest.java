@@ -120,11 +120,11 @@ class ContactServiceImplTest {
 
         given(principal.getName())
                 .willReturn(username);
-        given(userDetailsService.loadUserByUsername(username))
-                .willReturn(user);
 
         given(contactRepository.findByName(name))
                 .willReturn(Optional.of(contact));
+
+        contact.setUser(user);
 
         // when
         underTest.deleteByName(name, principal);
@@ -134,19 +134,20 @@ class ContactServiceImplTest {
         verify(contactRepository, times(1)).deleteInBulkByName(name);
     }
 
-    /*@Test
+    @Test
     void shouldThrowExceptionWhenContactIsNotFound(){
         // given
         var name = "Viktor Yushchenko";
+        var principal = Mockito.mock(Principal.class);
         given(contactRepository.findByName(name))
                 .willReturn(Optional.empty());
 
 
         // then
-        assertThatThrownBy(() -> underTest.deleteByName(name))
+        assertThatThrownBy(() -> underTest.deleteByName(name, principal))
                 .isInstanceOf(ContactNotFoundException.class)
                 .hasMessage("Contact not found with name - " + name);
-    }*/
+    }
 
     @Test
     void shouldUpdateWhenContactIsFoundAndOwnedByUser(){

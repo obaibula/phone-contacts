@@ -16,6 +16,12 @@ Therefore, I have chosen to use interfaces even for a single class.
 
 ### A Few Words About Lack Of Time
 
+Attention! I found an error one hour before the deadline and 
+I don't have time to fix it. Specifically, 
+the contacts should be unique within each user, not the entire program. 
+Unfortunately, due to significant time constraints, 
+I was rushing and didn't take this design detail into account.
+
 Please note that due to the limited timeframe of 3 days for completing this test task, 
 I implemented some features in a functional but suboptimal manner. 
 Given more time, I would have utilized a more robust and efficient approach. 
